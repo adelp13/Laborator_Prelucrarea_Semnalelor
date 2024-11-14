@@ -124,7 +124,7 @@ plt.show()
 
 # cheby1 de ordin 1, 5, 7 cu rp 0.5, 4, 10:
 ordine = [1, 3, 7]
-rps = [0.5, 3, 12]
+rps = [0.5, 3, 5, 12]
 fig, axs = plt.subplots(3, 1, figsize=(9, 6))
 t = np.linspace(0, N - 1, N)
 axs[0].plot(t, x, label="semnal initial")
@@ -153,21 +153,20 @@ plt.show()
 # un ordin mai mare are banda de tranzitie mai mica pentru ca analizeaza mai bine semnalul.
 # semnalele cu filtru de ordin mai mare sunt si mai uniforme pentru ca
 # delimiteaza mai precis frecventele de trecere si nu avem prea multe frecvente ramase cu amplitudini micsorate.
-# deci forma semnalului este mai apropiata de ce ne dorim, dar nu si pozitia esantioanelor, pentru ca se pot produce intarzieri, adica un eveniment se decaleaza.
-# in grafic intarzierea se observa mai mult la chebyshev, dar nu in toate esantioanele.
+# deci forma semnalului este mai apropiata de ce ne dorim
 
 # la butter diferentele intre ordine nu sunt la fel de vizibile nici ca forma a semnalului, nici ca intarziere,
 # deci alegem un ordin mic, tinand cont si ca un ordin mare creste complexitatea.
-# deci mai ales pentru chebyshev ar fi mai potrivit un ordin mic spre mediu (3-4), plus ca aici putem regla si cu rp.
+# deci mai ales pentru chebyshev ar fi mai potrivit un ordin mic spre mediu (4-5), plus ca aici putem regla si cu rp.
 
 # rp inseamna diferenta dintre oscilatiile benzii de trecere;
 # cu cat rp e mai mare cu atat tranzitia e mai rapida si frecventele sunt delimitate mai bine
-# totusi, o tranzitie prea brusca de la rp sau ordin prea mare elimina prea mult din semnal, tinzand spre un semnal constant,
-# acesta e alt motiv pentru care ordinul nu trebuie sa fie prea mare, pe langa complexitate si intarzieri
+# totusi, o tranzitie prea brusca de la rp sau ordin prea mare elimina prea mult din semnal (mai ales la rp), tinzand spre un semnal constant
+# acesta e alt motiv pentru care ordinul nu trebuie sa fie prea mare, pe langa complexitate
 
-# rp=3 pare sa micsoreze destul intervalul de frecvente din cele de trecere carora li se scade amplitudinea
-# si e destul de mic cat sa nu se piarda prea mult din semnal.
+# rp=3 pare sa micsoreze destul intervalul de frecvente din cele de trecere carora li se scade amplitudinea fara se piarda prea mult din semnal.
+# la rp=5 deja sunt tranzitii prea line
 
 # cel mai potrivit pentru trafic: chebishev ordin 3 rp 3
-# (pastreaza destul de bine momentele din zi cand e trafic minim sau maxim si creeaza un semnal lin,
-# eliminand interpolarile colturoase generate de un numar mic de esantioane).
+# pastreaza destul de bine momentele din zi cand e trafic minim sau maxim, ceea ce la cheby ordin 5 sau 7 tot cu rp 3 nu este la fel de vizibil.
+# creeaza un semnal lin, eliminand interpolarile colturoase generate de un numar mic de esantioane.
