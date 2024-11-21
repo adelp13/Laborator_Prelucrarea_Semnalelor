@@ -12,7 +12,7 @@ X_noisy = X + noise
 Y = np.fft.fft2(X_noisy)
 Y_shift = np.fft.fftshift(Y)
 
-raza = 60
+raza = 35
 filtru = np.zeros((len(Y), len(Y[0])))
 for i in range(len(Y)):
     for j in range(len(Y[0])):

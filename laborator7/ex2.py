@@ -7,7 +7,7 @@ Y = np.fft.fft2(X)
 Y_shift = np.fft.fftshift(Y) # acum frecventele mici se afla in centru (cele pe care vrem sa le pastram)
 # e mai usor sa le gasim asa decat daca se afla in cele 4 colturi
 
-raza = 60 # cu cat e mai mare cu atat pastram mai multe frecvente, din ce in ce mai mari
+raza = 75 # cu cat e mai mare cu atat pastram mai multe frecvente, din ce in ce mai mari
 filtru = np.zeros((len(Y), len(Y[0])))
 for i in range(len(Y)):
     for j in range(len(Y[0])):
