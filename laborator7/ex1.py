@@ -42,8 +42,8 @@ plt.show()
 #Y(0,5)=Y(0,N−5)=1, altfelYm1,m2=0,∀m1,m2
 
 c_frecventa = np.zeros((N, N))
-c_frecventa[0][5] = c_frecventa[0][N - 5] = 1
-
+c_frecventa[0][5] = 1
+c_frecventa[0][N - 5] = 1
 # ne intoarcem in spatiul timp:
 c_timp = np.fft.ifft2(c_frecventa)
 c_timp = np.real(c_timp)
@@ -52,7 +52,7 @@ plt.imshow(c_timp, cmap=plt.cm.gray)
 plt.title('1_c')
 plt.show()
 plt.savefig('generated_images/ex1_c.pdf', format="pdf")
-
+# avem doar frecvente verticale, componenta lor orizontala e nula, de aceea imaginea in timp va avea un pattern vertical
 # 1 d
 #Y(5, 0)=Y(N−5, 0)=1, altfelYm1,m2=0,∀m1,m2
 
@@ -70,8 +70,11 @@ plt.savefig('generated_images/ex1_d.pdf', format="pdf")
 # 1 e
 #Y(5, 5)=Y(N−5, N-5)=1, altfelYm1,m2=0,∀m1,m2
 e_frecventa = np.zeros((N, N))
-e_frecventa[5][5] = e_frecventa[N - 5][N - 5] = 1
-
+# e_frecventa[100][100] = 1
+# e_frecventa[80][80] = 1
+# e_frecventa[10][130] = 1
+e_frecventa[N - 5][N - 5] = 1 # pe diagonala principala
+e_frecventa[5][5] = 1
 # ne intoarcem in spatiul timp:
 e_timp = np.fft.ifft2(e_frecventa)
 e_timp = np.real(e_timp)
@@ -80,3 +83,6 @@ plt.imshow(e_timp, cmap=plt.cm.gray)
 plt.title('1_e')
 plt.show()
 plt.savefig('generated_images/ex1_e.pdf', format="pdf")
+# frecventele au si componente verticale si orzontale
+# pt ca 5 = 5 si N-5 = N-5 vor aparea doar linii diagonale,  altfel s-ar vedea si linii verticale si/sau orizontale
+# cele 2 reprezinta aceeasi frecventa (scazand din N exact 5), deci daca pastram doar una rezulta aceeasi imagine
