@@ -72,9 +72,9 @@ plt.savefig('generated_images/ex1_d.pdf', format="pdf")
 e_frecventa = np.zeros((N, N))
 # e_frecventa[100][100] = 1
 # e_frecventa[80][80] = 1
-# e_frecventa[10][130] = 1
-e_frecventa[N - 5][N - 5] = 1 # pe diagonala principala
-e_frecventa[5][5] = 1
+e_frecventa[10][130] = 1
+# e_frecventa[N - 5][N - 5] = 1 # pe diagonala principala
+# e_frecventa[5][5] = 1
 # ne intoarcem in spatiul timp:
 e_timp = np.fft.ifft2(e_frecventa)
 e_timp = np.real(e_timp)
@@ -84,5 +84,5 @@ plt.title('1_e')
 plt.show()
 plt.savefig('generated_images/ex1_e.pdf', format="pdf")
 # frecventele au si componente verticale si orzontale
-# pt ca 5 = 5 si N-5 = N-5 vor aparea doar linii diagonale,  altfel s-ar vedea si linii verticale si/sau orizontale
+# pt ca 5 = 5 si N-5 = N-5 vor aparea doar linii diagonale
 # cele 2 reprezinta aceeasi frecventa (scazand din N exact 5), deci daca pastram doar una rezulta aceeasi imagine
