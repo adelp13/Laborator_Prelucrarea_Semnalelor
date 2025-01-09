@@ -38,8 +38,8 @@ for i in range(0, h - dim_q + 1, dim_q):
         X_jpeg[i: i + dim_q, j: j + dim_q] = compresie_bloc(x)
 
 plt.imshow(X, cmap=plt.cm.gray)
-plt.savefig('generated_images/ex1_imagine_initiala.pdf', format="pdf")
+plt.savefig('generated_images/ex1_imagine_initiala.png', format="png")
 plt.show()
 plt.imshow(X_jpeg, cmap=plt.cm.gray)
-plt.savefig('generated_images/ex1_jpeg.pdf', format="pdf")
+plt.savefig('generated_images/ex1_jpeg.png', format="png")
 plt.show()

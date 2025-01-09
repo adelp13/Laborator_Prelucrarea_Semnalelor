@@ -9,6 +9,15 @@ dim_q = 8
 
 vectorizare = [[], [], []] # pentru cele 3 canale Y Cb Cr
 
+Q_jpeg = [[16, 11, 10, 16, 24, 40, 51, 61],
+          [12, 12, 14, 19, 26, 28, 60, 55],
+          [14, 13, 16, 24, 40, 57, 69, 56],
+          [14, 17, 22, 29, 51, 87, 80, 62],
+          [18, 22, 37, 56, 68, 109, 103, 77],
+          [24, 35, 55, 64, 81, 104, 113, 92],
+          [49, 64, 78, 87, 103, 121, 120, 101],
+          [72, 92, 95, 98, 112, 100, 103, 99]]
+
 def conversie_RGB_YCbCr(X):
     h, w, _ = X.shape
     X_YCbCr = np.zeros((h, w, 3))
@@ -24,7 +33,7 @@ def conversie_RGB_YCbCr(X):
 
 def conversie_YCbCr_RGB(X_YCbCr):
     h, w, _ = X_YCbCr.shape
-    X = np.zeros((h, w, 3), dtype=np.float32)
+    X = np.zeros((h, w, 3))
 
     Y = X_YCbCr[:, :, 0]
     Cb = X_YCbCr[:, :, 1] - 128
@@ -35,26 +44,17 @@ def conversie_YCbCr_RGB(X_YCbCr):
     X[:, :, 2] = Y + 1.772 * Cb
 
     X = np.clip(X, 0, 255)
-
     return X.astype(np.uint8)
 
-
 def compresie_bloc(x):
-    Q_jpeg = [[16, 11, 10, 16, 24, 40, 51, 61],
-              [12, 12, 14, 19, 26, 28, 60, 55],
-              [14, 13, 16, 24, 40, 57, 69, 56],
-              [14, 17, 22, 29, 51, 87, 80, 62],
-              [18, 22, 37, 56, 68, 109, 103, 77],
-              [24, 35, 55, 64, 81, 104, 113, 92],
-              [49, 64, 78, 87, 103, 121, 120, 101],
-              [72, 92, 95, 98, 112, 100, 103, 99]]
-
     y = dctn(x)
     y_jpeg = Q_jpeg*np.round(y/Q_jpeg)
-    #x_jpeg = idctn(y_jpeg)
-
     return y_jpeg
-
+def decompresie_bloc(y):
+   # y = y_jpeg * Q_jpeg
+    x = idctn(y)
+    x = np.clip(x, 16, 240)
+    return x
 def vectorizare_bloc(y):
     vectorizare = []
 
@@ -66,6 +66,21 @@ def vectorizare_bloc(y):
             for j in range(max(0, i - dim_q + 1), min(i + 1, dim_q)):
                 vectorizare.append(y[j, i - j])
     return vectorizare
+
+def devectorizare_bloc(vectorizare):
+    y = np.zeros((dim_q, dim_q))
+    index = 0
+
+    for i in range(2 * dim_q - 1):
+        if i % 2 == 0:
+            for j in range(min(i, dim_q - 1), max(-1, i - dim_q), -1):
+                y[j, i - j] = vectorizare[index]
+                index += 1
+        else:
+            for j in range(max(0, i - dim_q + 1), min(i + 1, dim_q)):
+                y[j, i - j] = vectorizare[index]
+                index += 1
+    return y
 
 X = face()
 
@@ -114,15 +129,30 @@ vectorizare_decodata[0] = vectorizare_totala_decodata[:len_vectorizare_canal]
 vectorizare_decodata[1] = vectorizare_totala_decodata[len_vectorizare_canal: 2 * len_vectorizare_canal]
 vectorizare_decodata[2] = vectorizare_totala_decodata[2 * len_vectorizare_canal:]
 
+# acum vrem sa obtinem imaginea initiala in cod YBcCr (pt fiecare bloc facem opusul vectorizarii, cuantizarii, iar apoi idctn
 
+X_decodat_YCbCr = np.zeros((h, w, c))
+
+for k in range(0, c):
+    index_vectorizare = 0
+    for i in range(0, h - dim_q + 1, dim_q):
+        for j in range(0, w - dim_q + 1, dim_q):
+            X_decodat_YCbCr[i:i + dim_q, j:j + dim_q, k] = devectorizare_bloc(vectorizare_decodata[k][index_vectorizare:index_vectorizare + dim_q * dim_q])
+            X_decodat_YCbCr[i:i + dim_q, j:j + dim_q, k] = decompresie_bloc(X_decodat_YCbCr[i:i + dim_q, j:j + dim_q, k])
+            index_vectorizare += dim_q * dim_q
+
+# diferenta = np.abs(X_YCbCr - X_decodat_YCbCr) # pt testat devectorizarea
 # trecem inapoi in RGB:
-# X_jpeg = conversie_YCbCr_RGB(X_jpeg)
-#X_jpeg = conversie_YCbCr_RGB(X_YCbCr)
+X_decodat = conversie_YCbCr_RGB(X_decodat_YCbCr)
+#X_decodat = conversie_YCbCr_RGB(X_YCbCr)
 
 plt.imshow(X, cmap=plt.cm.gray)
+plt.title("imagine initiala")
 plt.savefig('generated_images/ex2_imagine_initiala.png', format="png")
 plt.show()
-plt.imshow(X_jpeg)
-plt.savefig('generated_images/ex2_algortim_jpeg_si_inapoi.png', format="png")
+plt.imshow(X_decodat)
+plt.title("imagine decodata")
+plt.savefig('generated_images/ex2_imagine_decodata.png', format="png")
 plt.show()
+
 
